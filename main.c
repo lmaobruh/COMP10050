@@ -8,10 +8,6 @@
 #include <time.h>
 #include <string.h>
 
-void PlayerSet(int i);
-void Attack(int i, int n);
-void print(int n);
-
 typedef struct Player {
     float life;
     int smart;
@@ -24,33 +20,36 @@ typedef struct Player {
 }Player;
 //this struct stores and keeps track of each player's info
 
+void PlayerSet(int i, struct Player *P);
+void Attack(int i, int n, struct Player *P);
+void print(int n, struct Player *P);
+
 char Elf[] = {"Elf"};
 char Human[] = {"Human"};
 char Ogre[] = {"Ogre"};
 char Wizard[] = {"Wizard"};
 //player Types
 
-struct Player P[6];
-    //array for storing players
-
 int main() {
     int n;
     printf("Enter Number of Players (1 - 6): ");
     scanf("%d", &n);
+    Player *P;
+    P = (int*)malloc(n * sizeof(P));
     for (int i = 0; i < n; i++) {
-        PlayerSet(i);
+        PlayerSet(i, P);
     }
     /* Since I was asked not to include slots, the players are not
      given options asking them what to do. Instead they just attack */
     for (int i = 0; i < n; i++) {
-        Attack(i, n);
+        Attack(i, n, P);
     }
-    print(n);
+    print(n, P);
     //for printing the status of the game
     return 0;
 }
 
-void PlayerSet(int i) {
+void PlayerSet(int i, struct Player *P) {
 
     char c;
     printf("Enter Player %d Type:\nA: Elf\nB: Human\nC: Ogre\nD: Wizard\n", i+1);
@@ -66,7 +65,6 @@ void PlayerSet(int i) {
 
     printf("Enter Player %d Name: ", i+1);
     scanf("%s", P[i].playerName);
-    getchar();
 
     P[i].life = 100.00;
     //initializing life points to 100
@@ -120,7 +118,7 @@ void PlayerSet(int i) {
     }
 }
 
-void Attack(int i, int n) {
+void Attack(int i, int n, struct Player *P) {
     /* I was asked to implement attacks without placing players on slots.
      Since there are no slots, I'm going to provide code on what to do
      if there are either one or two players nearest to the attacker
@@ -177,7 +175,7 @@ void Attack(int i, int n) {
 
 }
 
-void print(int n) {
+void print(int n, struct Player *P) {
     for(int i = 0; i < n; i++)
     {
         printf("%s (%s, %.2f)\n", P[i].playerName, P[i].playerType, P[i].life);

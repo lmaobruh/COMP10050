@@ -1,4 +1,4 @@
-# 16203115 Assignment 2
+# 16203115 Assignment 2 by Aayan Atiq
 My partner Cathall Witham dropped the module and so, he could not contribute to this project.
 As such, I was asked to submit the assignment with limited functionalities.
 

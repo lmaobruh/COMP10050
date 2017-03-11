@@ -1,7 +1,7 @@
 /* Software Engineering Assignment 2 by Aayan Atiq (16203115)
-Note: Since my group partner dropped out, this program only has limited capabilities.
-There are no functionalities related to 'slots' or there implementation in this program.
-This is as per instructions given by Dr. Liliana Pasquale */
+ Note: Since my group partner dropped out, this program only has limited capabilities.
+ There are no functionalities related to 'slots' or there implementation in this program.
+ This is as per instructions given by Dr. Liliana Pasquale */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +9,8 @@ This is as per instructions given by Dr. Liliana Pasquale */
 #include <string.h>
 
 void PlayerSet(int i);
-void Attack(int i);
+void Attack(int i, int n);
+void print(int n);
 
 typedef struct Player {
     float life;
@@ -21,12 +22,16 @@ typedef struct Player {
     char playerType[10];
     char playerName[50];
 }Player;
-    //this struct stores and keeps track of each player's info
+//this struct stores and keeps track of each player's info
 
 char Elf[] = {"Elf"};
 char Human[] = {"Human"};
 char Ogre[] = {"Ogre"};
 char Wizard[] = {"Wizard"};
+//player Types
+
+struct Player P[6];
+    //array for storing players
 
 int main() {
     int n;
@@ -36,16 +41,17 @@ int main() {
         PlayerSet(i);
     }
     /* Since I was asked not to include slots, the players are not
-    given options asking them what to do. Instead they just attacl */
+     given options asking them what to do. Instead they just attack */
     for (int i = 0; i < n; i++) {
-        Attack(i);
+        Attack(i, n);
     }
+    print(n);
+    //for printing the status of the game
     return 0;
 }
 
 void PlayerSet(int i) {
-    Player *P;
-    P = (int*)malloc(6 * sizeof(P));
+
     char c;
     printf("Enter Player %d Type:\nA: Elf\nB: Human\nC: Ogre\nD: Wizard\n", i+1);
     scanf("%s", &c);
@@ -56,14 +62,18 @@ void PlayerSet(int i) {
     if(c == 'c' || c == 'C') strcpy(P[i].playerType , Ogre);
 
     if(c == 'd' || c == 'D') strcpy(P[i].playerType , Wizard);
-        //player type
+    //player type
 
     printf("Enter Player %d Name: ", i+1);
     scanf("%s", P[i].playerName);
+    getchar();
 
     P[i].life = 100.00;
-        //initializing life points to 100
+    //initializing life points to 100
     int total = 0;
+    srand(time(NULL));
+    /* The following code generates the various skill points of the players based
+     on their types and the rules provided to us */
 
     if(strcmp(Human , P[i].playerType) == 0) {
 
@@ -110,8 +120,66 @@ void PlayerSet(int i) {
     }
 }
 
-void Attack(int i) {
-    /* Since there are no slots, I'm going to provide code on what to do
-    if there are either one or two players nearest to the attacker */
+void Attack(int i, int n) {
+    /* I was asked to implement attacks without placing players on slots.
+     Since there are no slots, I'm going to provide code on what to do
+     if there are either one or two players nearest to the attacker
+     which are randomly selected */
+    srand(time(NULL));
 
+    int random1, random2;
+    do {
+        random1 = 1 + rand() % n;
+    } while(random1 != i);
+
+    if (n == 2) { //only two players
+        if(P[random1].strength <= 70) {
+            P[random1].life -= (0.5*P[random1].strength);
+        }
+        else {
+            P[i].life -= (0.3*P[random1].strength);
+        }
+        //the above code chooses a random index and attacks the player stored at the index
+    }
+
+    if (n > 2) { //more than two players
+        do {
+            random2 = 1 + rand() % n;
+        } while(random2 != i);
+
+        printf("Two players are at equal proximity. Choose which player to attack:\n"
+               "A: Name: %s\tType: %s\nB: Name: %s\tType: %s"
+               , P[random1].playerName, P[random1].playerType
+               , P[random2].playerName, P[random2].playerType);
+
+        char c;
+        c = getchar();
+
+        if(c == 'a' || c == 'A') {
+            if(P[random1].strength <= 70) {
+                P[random1].life -= (0.5*P[random1].strength);
+            }
+            else {
+                P[i].life -= (0.3*P[random1].strength);
+            }
+        }
+
+        else if(c == 'b' || c == 'B') {
+            if(P[random2].strength <= 70) {
+                P[random2].life -= (0.5*P[random2].strength);
+            }
+            else {
+                P[i].life -= (0.3*P[random2].strength);
+            }
+        }
+    }
+    //the above code chooses two random indices and asks the player whom to attack
+
+}
+
+void print(int n) {
+    for(int i = 0; i < n; i++)
+    {
+        printf("%s (%s, %.2f)\n", P[i].playerName, P[i].playerType, P[i].life);
+    }
 }
